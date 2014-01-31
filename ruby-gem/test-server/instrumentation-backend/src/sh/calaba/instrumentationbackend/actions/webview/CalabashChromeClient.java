@@ -65,16 +65,12 @@ public class CalabashChromeClient extends WebChromeClient {
 				Field field = getChromeClientField(webView.getClass());
 				if (field == null) {
 					mWebChromeClient = getChromeClient();
-                    if(mWebChromeClient == null)
-                        Log.i(TAG, "web view client not grabbed");
-                    else
-                        Log.i(TAG, "we got it!");
+
 				}
 				else {
 					try {
 						field.setAccessible(true);
 						mWebChromeClient = (WebChromeClient) field.get(webView);
-                        Log.i(TAG, "web view client grabbed");
 					} catch (IllegalArgumentException e) {					
 						e.printStackTrace();
 						throw new UnableToFindChromeClientException(e, webView);
@@ -84,11 +80,8 @@ public class CalabashChromeClient extends WebChromeClient {
 						throw new UnableToFindChromeClientException(e, webView);
 					}	
 				}
-
-
+                Log.d(TAG, mWebChromeClient != null ? "web view client available" : "web view client unavailable");
 		}
-
-        Log.i(TAG, "web view client built");
 
         if ( Looper.getMainLooper().getThread() == Thread.currentThread()) {
             webView.setWebChromeClient(this);
@@ -328,89 +321,146 @@ public class CalabashChromeClient extends WebChromeClient {
     @Override
     public boolean onCreateWindow(WebView view, boolean isDialog,
                                   boolean isUserGesture, Message resultMsg) {
-        Log.i(TAG, "onCreateWindowCalled");
         if(mWebChromeClient == null){
-            Log.i(TAG, "web view client pulled in is null");
             return super.onCreateWindow(view, isDialog, isUserGesture, resultMsg);
         } else {
-            Log.i(TAG, "calling old client onCreatView");
             return mWebChromeClient.onCreateWindow(view, isDialog, isUserGesture, resultMsg);
         }
     }
 
-    public void onRequestFocus(WebView view) {}
+    public void onRequestFocus(WebView view) {
+        if(mWebChromeClient == null){
+            super.onRequestFocus(view);
+        } else {
+            mWebChromeClient.onRequestFocus(view);
+        }
+    }
 
 
-    public void onCloseWindow(WebView window) {}
+    public void onCloseWindow(WebView window) {
+        if(mWebChromeClient == null){
+            super.onCloseWindow(window);
+        } else {
+            mWebChromeClient.onCloseWindow(window);
+        }
+    }
 
     public boolean onJsAlert(WebView view, String url, String message,
                              JsResult result) {
-        return false;
+        if (mWebChromeClient == null) {
+            return super.onJsAlert(view, url, message, result);
+        } else {
+            return mWebChromeClient.onJsAlert(view, url, message, result);
+        }
     }
 
 
     public boolean onJsConfirm(WebView view, String url, String message,
                                JsResult result) {
-        return false;
+        if (mWebChromeClient == null) {
+            return super.onJsConfirm(view, url, message, result);
+        } else {
+            return mWebChromeClient.onJsConfirm(view, url, message, result);
+        }
     }
 
     public boolean onJsBeforeUnload(WebView view, String url, String message,
                                     JsResult result) {
-        return false;
+        if (mWebChromeClient == null) {
+            return super.onJsBeforeUnload(view, url, message, result);
+        } else {
+            return mWebChromeClient.onJsBeforeUnload(view, url, message, result);
+        }
     }
 
     @Deprecated
     public void onExceededDatabaseQuota(String url, String databaseIdentifier,
                                         long quota, long estimatedDatabaseSize, long totalQuota,
                                         WebStorage.QuotaUpdater quotaUpdater) {
-        // This default implementation passes the current quota back to WebCore.
-        // WebCore will interpret this that new quota was declined.
-        quotaUpdater.updateQuota(quota);
+        if (mWebChromeClient == null) {
+            super.onExceededDatabaseQuota(url, databaseIdentifier, quota, estimatedDatabaseSize, totalQuota, quotaUpdater);
+        } else {
+            mWebChromeClient.onExceededDatabaseQuota(url, databaseIdentifier, quota, estimatedDatabaseSize, totalQuota, quotaUpdater);
+        }
     }
 
     @Deprecated
     public void onReachedMaxAppCacheSize(long requiredStorage, long quota,
                                          WebStorage.QuotaUpdater quotaUpdater) {
-        quotaUpdater.updateQuota(quota);
+        if (mWebChromeClient == null) {
+            super.onReachedMaxAppCacheSize(requiredStorage, quota, quotaUpdater);
+        } else {
+            mWebChromeClient.onReachedMaxAppCacheSize(requiredStorage, quota, quotaUpdater);
+        }
     }
 
     public void onGeolocationPermissionsShowPrompt(String origin,
-                                                   GeolocationPermissions.Callback callback) {}
+                                                   GeolocationPermissions.Callback callback) {
+        if (mWebChromeClient == null) {
+            super.onGeolocationPermissionsShowPrompt(origin, callback);
+        } else {
+            mWebChromeClient.onGeolocationPermissionsShowPrompt(origin, callback);
+        }
+    }
 
-    public void onGeolocationPermissionsHidePrompt() {}
+    public void onGeolocationPermissionsHidePrompt() {
+        if (mWebChromeClient == null) {
+            super.onGeolocationPermissionsHidePrompt();
+        } else {
+            mWebChromeClient.onGeolocationPermissionsHidePrompt();
+        }
+    }
 
     public boolean onJsTimeout() {
-        return true;
+        if (mWebChromeClient == null) {
+            return super.onJsTimeout();
+        } else {
+            return mWebChromeClient.onJsTimeout();
+        }
     }
 
     @Deprecated
-    public void onConsoleMessage(String message, int lineNumber, String sourceID) { }
+    public void onConsoleMessage(String message, int lineNumber, String sourceID) {
+        if (mWebChromeClient == null) {
+            super.onConsoleMessage(message, lineNumber, sourceID);
+        } else {
+            mWebChromeClient.onConsoleMessage(message, lineNumber, sourceID);
+        }
+    }
 
     public boolean onConsoleMessage(ConsoleMessage consoleMessage) {
-        // Call the old version of this function for backwards compatability.
-        onConsoleMessage(consoleMessage.message(), consoleMessage.lineNumber(),
-                consoleMessage.sourceId());
-        return false;
+        if (mWebChromeClient == null) {
+            return super.onConsoleMessage(consoleMessage);
+        } else {
+            return mWebChromeClient.onConsoleMessage(consoleMessage);
+        }
     }
 
 
     public Bitmap getDefaultVideoPoster() {
-        return null;
+        if (mWebChromeClient == null) {
+            return super.getDefaultVideoPoster();
+        } else {
+            return mWebChromeClient.getDefaultVideoPoster();
+        }
     }
 
 
     public View getVideoLoadingProgressView() {
-        return null;
+        if (mWebChromeClient == null) {
+            return super.getVideoLoadingProgressView();
+        } else {
+            return mWebChromeClient.getVideoLoadingProgressView();
+        }
     }
 
 
     public void getVisitedHistory(ValueCallback<String[]> callback) {
+        if (mWebChromeClient == null) {
+            super.getVisitedHistory(callback);
+        } else {
+            mWebChromeClient.getVisitedHistory(callback);
+        }
     }
-
-    public void openFileChooser(ValueCallback<Uri> uploadFile, String acceptType, String capture) {
-        uploadFile.onReceiveValue(null);
-    }
-
-    public void setupAutoFill(Message msg) { }
 
 }
