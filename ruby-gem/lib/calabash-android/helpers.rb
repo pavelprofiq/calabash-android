@@ -22,7 +22,7 @@ def main_activity(app)
 end
 
 def aapt_dump(app, key)
-  lines = `#{Env.tools_dir}/aapt dump badging "#{app}"`.lines.collect(&:strip)
+  lines = `"#{Env.tools_dir}"/aapt dump badging "#{app}"`.lines.collect(&:strip)
   lines.select { |l| l.start_with?("#{key}:") }
 end
 
