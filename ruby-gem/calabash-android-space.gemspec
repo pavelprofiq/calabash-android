@@ -3,7 +3,7 @@ $:.push File.expand_path("../lib", __FILE__)
 require "calabash-android/version"
 
 Gem::Specification.new do |s|
-  s.name        = "calabash-android"
+  s.name        = "calabash-android-space"
   s.version     = Calabash::Android::VERSION
   s.platform    = Gem::Platform::RUBY
   s.authors     = ["Jonas Maturana Larsen"]
