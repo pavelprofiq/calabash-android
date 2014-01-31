@@ -299,24 +299,66 @@ public class CalabashChromeClient extends WebChromeClient {
 		}
 	}
 
-    public void onProgressChanged(WebView view, int newProgress) {}
+    public void onProgressChanged(WebView view, int newProgress) {
+        if(mWebChromeClient == null){
+            super.onProgressChanged(view, newProgress);
+        } else {
+            mWebChromeClient.onProgressChanged(view, newProgress);
+        }
+    }
 
-    public void onReceivedTitle(WebView view, String title) {}
+    public void onReceivedTitle(WebView view, String title) {
+        if(mWebChromeClient == null){
+            super.onReceivedTitle(view, title);
+        } else {
+            mWebChromeClient.onReceivedTitle(view, title);
+        }
+    }
 
-    public void onReceivedIcon(WebView view, Bitmap icon) {}
+    public void onReceivedIcon(WebView view, Bitmap icon) {
+        if(mWebChromeClient == null){
+            super.onReceivedIcon(view, icon);
+        } else {
+            mWebChromeClient.onReceivedIcon(view, icon);
+        }
+    }
 
 
     public void onReceivedTouchIconUrl(WebView view, String url,
-                                       boolean precomposed) {}
+                                       boolean precomposed) {
+        if(mWebChromeClient == null){
+            super.onReceivedTouchIconUrl(view, url, precomposed);
+        } else {
+            mWebChromeClient.onReceivedTouchIconUrl(view, url, precomposed);
+        }
+    }
 
 
-    public void onShowCustomView(View view, CustomViewCallback callback) {};
+    public void onShowCustomView(View view, CustomViewCallback callback) {
+        if(mWebChromeClient == null){
+            super.onShowCustomView(view, callback);
+        } else {
+            mWebChromeClient.onShowCustomView(view, callback);
+        }
+    }
 
     @Deprecated
     public void onShowCustomView(View view, int requestedOrientation,
-                                 CustomViewCallback callback) {};
+                                 CustomViewCallback callback) {
+        if(mWebChromeClient == null){
+            super.onShowCustomView(view, requestedOrientation, callback);
+        } else {
+            mWebChromeClient.onShowCustomView(view, requestedOrientation, callback);
+        }
+    }
 
-    public void onHideCustomView() {}
+    public void onHideCustomView() {
+        if(mWebChromeClient == null){
+            super.onHideCustomView();
+        } else {
+            mWebChromeClient.onHideCustomView();
+        }
+    }
 
     @Override
     public boolean onCreateWindow(WebView view, boolean isDialog,
