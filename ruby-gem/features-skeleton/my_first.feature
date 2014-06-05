@@ -1,9 +1,5 @@
 Feature: Login feature22
 
-Scenario: Reset PIN
-And I login to Sace with org "muhehe.profiq.cz" email "a@a.cz" password "sasasasa1" and PINs "2222"
-Then I open organization list menu  
-Then I wait for 10 seconds
 
 Scenario: Login through SAML (+sliding in list of apps)
 And I enter "muhehe.profiq.cz" as the Organization name
