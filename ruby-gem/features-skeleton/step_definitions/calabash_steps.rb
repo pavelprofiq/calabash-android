@@ -274,8 +274,9 @@ Then(/^I login to Sace with org "(.*?)" email "(.*?)" password "(.*?)" and PINs 
   query "edittext id:'passwordTextField'", :setText => arg3
   wait_for_elements_exist(["* id:'login_button'"], :timeout => 20)
   touch "button id:'login_button'"
-  wait_for_elements_exist(["* id:'pin'"], :timeout => 20)
-  wait_for_elements_exist(["* id:'confirm'"], :timeout => 20)
+  sleep(5)
+  wait_for_elements_exist(["* id:'pin'"], :timeout => 30)
+  wait_for_elements_exist(["* id:'confirm'"], :timeout => 30)
   query "edittext id:'confirm'", :setText => arg4
   query "edittext id:'pin'", :setText => arg4
   wait_for_elements_exist(["* id:'set_pin_button'"], :timeout => 20)
@@ -285,18 +286,44 @@ Then(/^I login to Sace with org "(.*?)" email "(.*?)" password "(.*?)" and PINs 
 end
 
 
+Then(/^I navigate back from account to list of apps$/) do
+  wait_for( timeout: 60  ) { query("textview", 'Settings') }
+  sleep(0.1)
+  touch "textview text:'#{'Settings'}'"
+end
+
+Then(/^I read terms of service$/) do
+  performAction('wait_for_text', "Terms of Service", 12)
+  sleep(0.3)
+  performAction('click_on_text',"Terms of Service")
+  sleep(2.3)
+  touch "button id:'button3'"
+end
 
 
+Then(/^I read attributions$/) do
+  performAction('wait_for_text', "Attributions", 12)
+  sleep(0.3)
+  performAction('click_on_text',"Attributions")
+  sleep(2.3)
+  touch "button id:'button3'"
+end
 
 
-
-
-
-
-
-
-
-
+Then(/^I reset current PIN "(.*?)" to "(.*?)" and confirmation "(.*?)"$/) do |arg1, arg2, arg3|
+  performAction('wait_for_text', "Reset PIN", 12)
+  sleep(0.3)
+  performAction('click_on_text',"Reset PIN")
+  performAction('wait_for_text', "Current PIN", 12)
+  sleep(0.3)
+  wait_for_elements_exist(["* id:'old_pin'"], :timeout => 20)
+  wait_for_elements_exist(["* id:'new_pin'"], :timeout => 20)
+  wait_for_elements_exist(["* id:'confirm_new_pin'"], :timeout => 20)
+  performAction('enter_text_into_id_field', arg1, 'old_pin')
+  performAction('enter_text_into_id_field', arg2, 'new_pin')
+  performAction('enter_text_into_id_field', arg3, 'confirm_new_pin')
+  touch "button id:'save'"
+end
 
 
 
