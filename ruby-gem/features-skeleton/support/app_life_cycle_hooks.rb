@@ -8,6 +8,7 @@ end
 After do |scenario|
   if scenario.failed?
     screenshot_embed
+    reinstall_apps()
   end
   shutdown_test_server
 end
