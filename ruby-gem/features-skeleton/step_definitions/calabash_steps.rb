@@ -79,12 +79,10 @@ end
 
 Then(/^I press on keyboard "(.*?)" as SAML email$/) do |arg1|
   system("adb shell input text treti@se.cz")
-  perform_action('keyboard_enter_text', arg1)
 end
 
 Then(/^I press on keyboard "(.*?)" as SAML password$/) do |arg1|
   system("adb shell input text sasasasa1")
-  perform_action('keyboard_enter_text', arg1)
 end
 
 Then(/^I press on keyboard "(.*?)" as manager org$/) do |arg1|
