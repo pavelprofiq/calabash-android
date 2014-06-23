@@ -1,6 +1,14 @@
 Feature: Login feature22
 
 
+Scenario: Add and delete user few times
+And I login to Sace with org "workforce.profiq.cz" email "a@a.a" password "sasasasa1" and PINs "2222"
+Then I delete organization 
+And I login to Sace with org "workforce.profiq.cz" email "b@a.a" password "sasasasa1" and PINs "2222"
+Then I delete organization
+
+
+
 Scenario: Performance test - more than 20 apps and more than 10 users
 And I login to Sace with org "workforce.profiq.cz" email "a@a.a" password "sasasasa1" and PINs "2222"
 Then I open organization list menu 
