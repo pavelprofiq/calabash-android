@@ -1,5 +1,6 @@
 Feature: Action toolbar in an application
 
+@sanity @AfterSpaceLoads_Application_AcionToolbar
 Scenario: Add favorite C15169
 And I enter "muhehe.profiq.cz" as the Organization name
 Then I press Next button
@@ -20,6 +21,7 @@ Then I open favorite "Act-On :: Login"
 Then I try to find login element form from Act-On
 Then I delete organization
 
+@sanity @AfterSpaceLoads_Application_AcionToolbar
 Scenario: Open tab view C15170
 And I enter "muhehe.profiq.cz" as the Organization name
 Then I press Next button
@@ -36,7 +38,7 @@ Then I press "Act-on :: Login"
 Then I try to find login element form from Act-On
 Then I delete organization 
 
-
+@sanity @AfterSpaceLoads_Application_AcionToolbar
 Scenario: Navigate through tab view to another tab C15171
 And I login to Sace with org "muhehe.profiq.cz" email "a@a.cz" password "sasasasa1" and PINs "2222"
 Then I open organization list menu  
@@ -51,7 +53,7 @@ Then I close new tab
 Then I press "Aaron Haser's Tests"
 Then I delete organization 
 
-
+@sanity @AfterSpaceLoads_Application_AcionToolbar
 Scenario: Refresh page C15172
 And I enter "vpnciscotesting.profiq.cz" as the Organization name
 Then I press Next button
@@ -65,8 +67,7 @@ Then I refresh page
 Then I cancel VPN auth form
 Then I delete organization 
 
-
-
+@sanity @AfterSpaceLoads_Application_AcionToolbar
 Scenario: Navigate via link and history forward C15173
 And I login to Sace with org "muhehe.profiq.cz" email "a@a.cz" password "sasasasa1" and PINs "2222"
 Then I open organization list menu  
@@ -83,6 +84,7 @@ Then I open tab view
 Then I press "Google"
 Then I delete organization 
 
+@sanity @AfterSpaceLoads_Application_AcionToolbar
 Scenario: Navigate via link and history backward C15174
 And I login to Sace with org "muhehe.profiq.cz" email "a@a.cz" password "sasasasa1" and PINs "2222"
 Then I open organization list menu  
