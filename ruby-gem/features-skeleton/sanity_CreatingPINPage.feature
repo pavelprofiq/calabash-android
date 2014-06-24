@@ -1,8 +1,6 @@
 Feature: Creating PIN page 
 
-
-
-
+@sanity @CreatingPINPage
 Scenario: Enter numeric PIN C15153
 And I enter "muhehe.profiq.cz" as the Organization name
 Then I press Next button
@@ -17,6 +15,7 @@ Then I press delete organization
 Then I press "Yes"
 Then I wait until I see entering organization name page
 
+@sanity @CreatingPINPage
 Scenario: Enter PIN which require numbers letters and special characters PIN C15154
 And I enter "complicatedpinorg.profiq.cz" as the Organization name
 Then I press Next button
@@ -27,6 +26,7 @@ Then I press Continue button
 Then I wait, until load Space 
 Then I delete organization 
 
+@sanity @CreatingPINPage
 Scenario: Enter shorter PIN C15155
 And I enter "complicatedpinorg.profiq.cz" as the Organization name
 Then I press Next button
@@ -39,6 +39,7 @@ Then I press "OK"
 Then I press back button on the top
 Then I press back button on the top
 
+@sanity @CreatingPINPage
 Scenario: Enter PINs which does not match C15156
 And I enter "complicatedpinorg.profiq.cz" as the Organization name
 Then I press Next button
@@ -51,6 +52,7 @@ Then I press "OK"
 Then I press back button on the top
 Then I press back button on the top
 
+@sanity @CreatingPINPage
 Scenario: Navigate back C15245
 And I enter "complicatedpinorg.profiq.cz" as the Organization name
 Then I press Next button
