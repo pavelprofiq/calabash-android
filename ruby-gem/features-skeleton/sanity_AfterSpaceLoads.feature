@@ -1,6 +1,7 @@
 Feature: After the Space loads
 
 
+@sanity @AfterSpaceLoads
 Scenario: Reset PIN C15159
 And I enter "muhehe.profiq.cz" as the Organization name
 Then I press Next button
@@ -18,6 +19,7 @@ Then I enter PIN require "3333"
 Then I press Sign in
 Then I delete organization 
 
+@sanity @AfterSpaceLoads
 Scenario: Delete org C15160
 And I enter "muhehe.profiq.cz" as the Organization name
 Then I press Next button
@@ -32,6 +34,7 @@ Then I press delete organization
 Then I press "Yes"
 Then I wait until I see entering organization name page
 
+@sanity @AfterSpaceLoads
 Scenario: Read terms of service (content of terms is not tested) C15161
 And I login to Sace with org "muhehe.profiq.cz" email "a@a.cz" password "sasasasa1" and PINs "2222"
 Then I open organization list menu  
@@ -41,6 +44,7 @@ Then I navigate back from account to list of apps
 Then I close organization list menu 
 Then I delete organization 
 
+@sanity @AfterSpaceLoads
 Scenario: Read Attributions (content of Attributions is not tested) C15162
 And I login to Sace with org "muhehe.profiq.cz" email "a@a.cz" password "sasasasa1" and PINs "2222"
 Then I open organization list menu  
@@ -50,6 +54,7 @@ Then I navigate back from account to list of apps
 Then I close organization list menu 
 Then I delete organization 
 
+@sanity @AfterSpaceLoads
 Scenario: Navigate back C15163
 And I login to Sace with org "muhehe.profiq.cz" email "a@a.cz" password "sasasasa1" and PINs "2222"
 Then I open organization list menu  
