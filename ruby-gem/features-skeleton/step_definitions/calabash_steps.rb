@@ -1,6 +1,6 @@
 require 'calabash-android/calabash_steps'
-
-require 'calabash-android/calabash_steps'
+require 'calabash-android/management/adb'
+require 'calabash-android/operations'
 
 Then(/^I press Continue button$/) do
   wait_for_elements_exist(["* id:'set_pin_button'"], :timeout => 20)
@@ -82,6 +82,7 @@ Then(/^I press on keyboard "(.*?)" as SAML email$/) do |arg1|
 end
 
 Then(/^I press on keyboard "(.*?)" as SAML password$/) do |arg1|
+  sleep(1.2)
   system("adb shell input text sasasasa1")
 end
 
@@ -156,11 +157,12 @@ Then(/^I touch Aarons google link$/) do
 end
 
 Then(/^I switch organization$/) do
-  wait_for_elements_exist(["button id:'switch_org_button'"], :timeout => 120)
+  wait_for_elements_exist(["button id:'switch_org_button'"], :timeout => 12)
   touch "button id:'switch_org_button'"
 end
 
 Then(/^I enter PIN require "(.*?)"$/) do |arg1|
+  wait_for_elements_exist(["* id:'enter_pin'"], :timeout => 12)
   query "edittext id:'enter_pin'",  :setText => arg1
 end
 
@@ -211,6 +213,16 @@ Then(/^I choose "(.*?)" app$/) do |text|
   touch "textview text:'#{text}'"
 end
 
+Then(/^I choose "(.*?)" app and wait until loads$/) do |text|
+  wait_for( timeout: 60  ) { query("textview", 'text') }
+  sleep(1.5)
+  touch "textview text:'#{text}'"
+  sleep(1.5)
+  performAction('wait_for_no_progress_bars') 
+end
+
+
+
 Then(/^I open action toolbar button$/) do
   wait_for_elements_exist(["* id:'action_show_toolbar'"], :timeout => 5)
   touch "* id:'action_show_toolbar'"
@@ -243,8 +255,45 @@ Then(/^I slide down in list of apps$/) do
   performAction('drag', 50, 70, 50, 40, 2)
 end
 
+Then(/^I slide down in list of apps with Nexus 5 slightly$/) do
+  sleep(3)
+  performAction('drag', 50, 50, 70, 40, 30)
+end
+
+Then(/^I slide down in list of apps with Nexus 5$/) do
+  sleep(3)
+  performAction('drag', 50, 50, 70, 20, 1)
+end
+
+
+
+Then(/^I refresh list of apps in Nexus 5$/) do
+  sleep(3)
+  performAction('drag', 50, 40, 50, 90, 30)
+  wait_for_elements_exist(["* id:'ptr_text'"], :timeout => 10)
+end
+
+
+
+
+
+Then(/^I delete organization from tab view$/) do
+  wait_for_elements_exist(["* id:'action_bar_title'"], :timeout => 70)
+  element_does_not_exist("* id:'action_show_toolbar'")
+  sleep(0.1)
+  touch "textview id:'action_bar_title'"
+  wait_for_elements_exist(["* id:'account_button'"], :timeout => 5)
+  touch "button id:'account_button'"
+  wait_for_elements_exist(["* id:'delete_org'"], :timeout => 15)
+  touch "button id:'delete_org'"
+  performAction('wait_for_text', "Yes", 12)
+  performAction('click_on_text',"Yes")
+end
+
+
 Then(/^I delete organization$/) do
-  wait_for_elements_exist(["* id:'action_bar_title'"], :timeout => 120)
+  wait_for_elements_exist(["* id:'action_bar_title'"], :timeout => 70)
+  wait_for_elements_exist(["* id:'action_show_toolbar'"], :timeout => 120)
   sleep(0.1)
   touch "textview id:'action_bar_title'"
   wait_for_elements_exist(["* id:'account_button'"], :timeout => 5)
@@ -429,18 +478,12 @@ Then /^I wait until is page loaded$/ do
   performAction('wait_for_no_progress_bars') 
 end
 
-Then /^I press the menu key$/ do
-  performAction('press_menu')
-end
-
-Then /^I check only one tab exist$/ do
-  element_does_not_exist("* id:'close_tab_button'")
-end
-
-
-
 
 Then /^I wait until page under VPN is loaded$/ do
+  sleep(0.1)
+    performAction('wait_for_no_progress_bars')
+  sleep(0.1)
+    performAction('wait_for_no_progress_bars')
   sleep(0.1)
     performAction('wait_for_no_progress_bars')
   sleep(0.1)
@@ -487,13 +530,45 @@ Then /^I press upper tab$/ do
   touch "* id:'title'"
 end
 
+Then(/^Space should not load$/) do
+   sleep(6)
+   element_does_not_exist("* id:'action_show_toolbar'") 
+end
+
+
+
+Then(/^I reinstall the Space$/) do
+   reinstall_apps()
+end
+
+Then(/^I see message about unreachable page$/) do
+    wait_for_elements_exist(["* id:'message'"], :timeout => 30)
+end
+
+
+Then(/^I choose "(.*?)" app and see message$/) do |text|
+  wait_for( timeout: 60  ) { query("textview", 'text') }
+  sleep(1.5)
+  touch "textview text:'#{text}'"
+  wait_for_elements_exist(["* id:'message'"], :timeout => 30)
+end
 
 
 
 
 
 
+Then /^I press the menu key$/ do
+  performAction('press_menu')
+end
 
+Then /^I check only one tab exist$/ do
+  element_does_not_exist("* id:'close_tab_button'")
+end
+
+Then /^I select the "([^\"]*)" tab$/ do | tab |
+  touch("android.widget.TabWidget descendant TextView {text LIKE[c] '#{tab}'}")
+end
 
 
 
