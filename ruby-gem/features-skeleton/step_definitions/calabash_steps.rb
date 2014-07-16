@@ -2,6 +2,15 @@ require 'calabash-android/calabash_steps'
 require 'calabash-android/management/adb'
 require 'calabash-android/operations'
 
+
+def connected_devices
+   lines = `#{Env.adb_path} devices`.split("\n")
+   start_index = lines.index{ |x| x =~ /List of devices attached/ } + 1
+   lines[start_index..-1].collect { |l| l.split("\t").first }
+end
+
+
+
 Then(/^I press Continue button$/) do
   wait_for_elements_exist(["* id:'set_pin_button'"], :timeout => 20)
   touch "button id:'set_pin_button'"
@@ -19,13 +28,16 @@ end
 
 Then(/^I enter "(.*?)" as the Organization name$/) do |arg1|
   wait_for_elements_exist(["* id:'org_name'"], :timeout => 20)
+  performAction('drag', 50, 70, 50, 60, 2)
   query "edittext id:'org_name'", :setText => arg1
 end
 
 Then(/^I enter user's email "(.*?)" and password "(.*?)"$/) do |arg1, arg2|
   wait_for_elements_exist(["* id:'loginTextField'"], :timeout => 20)
+  performAction('drag', 50, 60, 50, 70, 2)
   query "edittext id:'loginTextField'", :setText => arg1 
   wait_for_elements_exist(["* id:'passwordTextField'"], :timeout => 20)
+  touch "* id:'passwordTextField'"
   query "edittext id:'passwordTextField'", :setText => arg2
 end
 
@@ -59,7 +71,10 @@ end
 
 Then(/^I add favorite$/) do
   performAction('wait_for_no_progress_bars') 
+  wait_for_elements_exist(["* id:'favorite'"], :timeout => 60)
+  sleep(0.1)
   touch "imagebutton id:'favorite'"
+  sleep(0.1)
 end
 
 
@@ -134,18 +149,20 @@ Then(/^I roll favorites$/) do
 end
 
 Then(/^I choose Forgot password$/) do
-  wait_for_elements_exist(["* id:'forgot_password_button'"], :timeout => 120)
+  wait_for_elements_exist(["* id:'forgot_password_button'"], :timeout => 10)
   touch "Button id:'forgot_password_button'"
 end
 
 Then(/^I reset password$/) do
-  wait_for_elements_exist(["* id:'reset_password'"], :timeout => 120)
+  performAction('send_key_enter')
+  wait_for_elements_exist(["* id:'reset_password'"], :timeout => 10)
   touch "Button id:'reset_password'"
 end
 
-Then(/^I choose navigate back button on the top$/) do
-  touch "textview text:'#{'Reset Password'}'"
 
+Then(/^I choose navigate back button on the top$/) do
+  wait_for_elements_exist(["android.widget.ImageView id:'up'"], :timeout => 10)
+  touch "android.widget.ImageView id:'up'"
 end
 
 
@@ -218,7 +235,8 @@ Then(/^I choose "(.*?)" app and wait until loads$/) do |text|
   sleep(1.5)
   touch "textview text:'#{text}'"
   sleep(1.5)
-  performAction('wait_for_no_progress_bars') 
+  element_does_not_exist("* id:'action_show_toolbar'") 
+  wait_for_elements_do_not_exist(["* id:'progress_horizontal'"], :timeout => 90, :post_timeout => 1)
 end
 
 
@@ -235,27 +253,49 @@ end
 
 Then(/^I enter into manager organization name "(.*?)" email "(.*?)" password "(.*?)"$/) do |arg1, arg2, arg3|
   performAction('wait_for_no_progress_bars') 
+  sleep(4)
+  performAction('wait_for_no_progress_bars')
   set_text "webView css:input[id=textfield-1017-inputEl]", arg2
   set_text "webView css:input[id=textfield-1021-inputEl]", arg3
   set_text "webView css:input[id=textfield-1016-inputEl]", arg1
+  performAction('send_key_enter')
+  performAction('wait_for_no_progress_bars') 
+  sleep(14) 
+  performAction('wait_for_no_progress_bars')
 end
 
 Then(/^I wait until I see create organization page$/) do
-  wait_for_elements_exist(["* id:'org_name'"], :timeout => 120)
+  wait_for_elements_exist(["* id:'org_name'"], :timeout => 220)
 end
+
 
 Then(/^I enter "(.*?)" as the email$/) do |arg1|
   wait_for_elements_exist(["* id:'loginTextField'"], :timeout => 120)
   query "edittext id:'loginTextField'", :setText => arg1
+  touch "* id:'passwordTextField'"
+  performAction('send_key_enter')
 end
+
+Then(/^I enter "(.*?)" as the email on Nexus5$/) do |arg1|
+  wait_for_elements_exist(["* id:'loginTextField'"], :timeout => 120)
+  query "edittext id:'loginTextField'", :setText => arg1
+  touch "* id:'passwordTextField'"
+end
+
 
 
 Then(/^I slide down in list of apps$/) do
   sleep(2)
-  performAction('drag', 50, 70, 50, 40, 2)
+  performAction('drag', 50, 70, 50, 40, 30)
 end
 
 Then(/^I slide down in list of apps with Nexus 5 slightly$/) do
+  sleep(3)
+  performAction('drag', 50, 50, 70, 40, 30)
+end
+
+
+Then(/^I slide down in list of apps slightly$/) do
   sleep(3)
   performAction('drag', 50, 50, 70, 40, 30)
 end
@@ -264,6 +304,7 @@ Then(/^I slide down in list of apps with Nexus 5$/) do
   sleep(3)
   performAction('drag', 50, 50, 70, 20, 1)
 end
+
 
 
 
@@ -308,16 +349,13 @@ Then(/^I wait until I see entering organization name page$/) do
   performAction('wait_for_text', "Organization name", 120)
 end
 
-Then(/^I do a long press on a link - Nexus 5$/) do
-  performAction("long_press_coordinate", 300, 900)
-end
 
 Then(/^I open in new tab$/) do
   performAction('wait_for_text', "Open in new tab", 12)
   performAction('click_on_text',"Open in new tab")
 end
 
-Then(/^I login to Sace with org "(.*?)" email "(.*?)" password "(.*?)" and PINs "(.*?)"$/) do |arg1,arg2,arg3,arg4|
+Then(/^I login to Sace with org "(.*?)" email "(.*?)" password "(.*?)" and PINs "(.*?)" Nexus5$/) do |arg1,arg2,arg3,arg4|
   wait_for_elements_exist(["* id:'org_name'"], :timeout => 20)
   touch "* id:'org_name'"
   query "edittext id:'org_name'", :setText => arg1
@@ -342,6 +380,7 @@ Then(/^I login to Sace with org "(.*?)" email "(.*?)" password "(.*?)" and PINs 
   sleep(1)
 end
 
+
 Then(/^I login to Sace client with org "(.*?)" email "(.*?)" password "(.*?)"$/) do |arg1,arg2,arg3|
   wait_for_elements_exist(["* id:'org_name'"], :timeout => 20)
   query "edittext id:'org_name'", :setText => arg1
@@ -360,9 +399,8 @@ end
 
 
 Then(/^I navigate back from account to list of apps$/) do
-  wait_for( timeout: 60  ) { query("textview", 'Settings') }
-  sleep(0.1)
-  touch "textview text:'#{'Settings'}'"
+  wait_for_elements_exist(["* id:'up'"], :timeout => 5)
+  touch "* id:'up'"
 end
 
 Then(/^I read terms of service$/) do
@@ -382,13 +420,14 @@ Then(/^I read attributions$/) do
   touch "button id:'button3'"
 end
 
-
-Then(/^I reset current PIN "(.*?)" to "(.*?)" and confirmation "(.*?)"$/) do |arg1, arg2, arg3|
+Then(/^I click on reset PIN button$/) do
   performAction('wait_for_text', "Reset PIN", 12)
   sleep(0.3)
   performAction('click_on_text',"Reset PIN")
   performAction('wait_for_text', "Current PIN", 12)
-  sleep(0.3)
+end
+
+Then(/^I reset current PIN "(.*?)" to "(.*?)" and confirmation "(.*?)"$/) do |arg1, arg2, arg3|
   wait_for_elements_exist(["* id:'old_pin'"], :timeout => 20)
   wait_for_elements_exist(["* id:'new_pin'"], :timeout => 20)
   wait_for_elements_exist(["* id:'confirm_new_pin'"], :timeout => 20)
@@ -426,6 +465,8 @@ end
 
 
 Then(/^I click on back button in entering org page$/) do
+  wait_for_elements_exist(["* id:'org_name'"], :timeout => 20)
+  performAction('drag', 50, 70, 50, 60, 2)
   wait_for_elements_exist(["* id:'back_button'"], :timeout => 30)
   touch "* id:'back_button'"
 end
@@ -440,6 +481,7 @@ Then(/^I press back button on the top$/) do
   wait_for_elements_exist(["* id:'home'"], :timeout => 30)
   touch "* id:'home'"
 end
+
 
 
 Then(/^I refresh page$/) do
@@ -463,6 +505,7 @@ end
 Then(/^I try to find login element form from Act-On$/) do
   sleep(1.8)
   performAction('wait_for_no_progress_bars')
+  sleep(1.8)
   set_text "webView css:input[id=login]",  :setText => 'idk'
 end
 
@@ -470,11 +513,13 @@ end
 Then /^I close new tab$/ do
   wait_for_elements_exist(["* id:'close_tab_button'"], :timeout => 30)
   touch "* id:'close_tab_button'"
+  wait_for_elements_do_not_exist(["* id:'close_tab_button'"], :timeout => 90, :post_timeout => 1)
 end
 
 
 
 Then /^I wait until is page loaded$/ do
+  sleep(1)
   performAction('wait_for_no_progress_bars') 
 end
 
@@ -502,20 +547,6 @@ Then /^I wait until page under VPN is loaded$/ do
     performAction('wait_for_no_progress_bars')
   sleep(0.1)
     performAction('wait_for_no_progress_bars')
-end
-
-
-
-Then /^I login to SAML OneLogin on Nexus5 on user dalsi@se.cz$/ do
-  sleep(10)
-  performAction("touch_coordinate", 240, 680)
-  system("adb shell input text dalsi@se.cz")
-  sleep(1)
-  performAction('send_key_enter')
-  sleep(1)
-  system("adb shell input text sasasasa1")
-  performAction('send_key_enter')
-  wait_for_elements_exist(["* id:'message'"], :timeout => 30)
 end
 
 
@@ -570,6 +601,175 @@ Then /^I select the "([^\"]*)" tab$/ do | tab |
   touch("android.widget.TabWidget descendant TextView {text LIKE[c] '#{tab}'}")
 end
 
+
+
+Then(/^I login to Sace with org "(.*?)" email "(.*?)" password "(.*?)" and PINs "(.*?)"$/) do |arg1,arg2,arg3,arg4|
+  wait_for_elements_exist(["* id:'org_name'"], :timeout => 20)
+  performAction('drag', 50, 70, 50, 60, 2)
+  touch "* id:'org_name'"
+  query "edittext id:'org_name'", :setText => arg1
+  wait_for_elements_exist(["* id:'login_new_org_button'"], :timeout => 20)
+  touch "button id:'login_new_org_button'"
+
+  wait_for_elements_exist(["* id:'loginTextField'"], :timeout => 20)
+  performAction('drag', 50, 60, 50, 70, 2)
+  query "edittext id:'loginTextField'", :setText => arg2 
+  wait_for_elements_exist(["* id:'passwordTextField'"], :timeout => 20)
+  touch "* id:'passwordTextField'"
+  query "edittext id:'passwordTextField'", :setText => arg3
+  wait_for_elements_exist(["* id:'login_button'"], :timeout => 20)
+  touch "button id:'login_button'"
+  sleep(1)
+  wait_for_elements_exist(["* id:'pin'"], :timeout => 30)
+  wait_for_elements_exist(["* id:'confirm'"], :timeout => 30)
+  query "edittext id:'confirm'", :setText => arg4
+  query "edittext id:'pin'", :setText => arg4
+  wait_for_elements_exist(["* id:'set_pin_button'"], :timeout => 20)
+  touch "button id:'set_pin_button'"
+  wait_for_elements_exist(["* id:'action_bar_title'"], :timeout => 70)
+  sleep(1)
+end
+
+
+Then(/^I press "(.*?)" in tab name$/) do |arg1|
+  wait_for_elements_exist(["* id:'title'"], :timeout => 70)
+  touch "android.widget.TextView id:'title' text:'#{arg1}'"
+end
+
+Then(/^I maximize the tab$/) do 
+  wait_for_elements_exist(["* id:'title'"], :timeout => 70)
+  touch "android.widget.TextView id:'title'"
+end
+
+Then(/^I maximize parent tab$/) do 
+  wait_for_elements_exist(["* id:'title'"], :timeout => 70)
+  touch "android.widget.TextView id:'title'"
+end
+
+Then(/^I open first tab$/) do |arg1|
+  wait_for_elements_exist(["* id:'title'"], :timeout => 70)
+  sleep(0.5)
+  touch "* id:'title'"
+end
+
+
+Then(/^I press on a link$/) do
+if $phone==["s3mini"]
+  performAction("touch_coordinate", 53, 310)
+  performAction("touch_coordinate", 53, 310)
+  performAction("touch_coordinate", 53, 310)
+elsif $phone==["nexus5"]
+  performAction("touch_coordinate", 200, 640)
+end
+end
+
+Then(/^I do a long press on a link$/) do
+if $phone==["s3mini"]
+  performAction("long_press_coordinate", 53, 310)
+elsif $phone==["nexus5"]
+  performAction("long_press_coordinate", 300, 900)
+end
+end
+
+Then /^I login to SAML OneLogin on user treti@se.cz$/ do
+  sleep(10)
+if $phone==["s3mini"]
+  performAction("touch_coordinate", 82, 335)
+elsif $phone==["nexus5"]
+  performAction("touch_coordinate", 240, 680)
+end
+  system("adb shell input text treti@se.cz")
+  sleep(1)
+  performAction('send_key_enter')
+  sleep(1)
+  system("adb shell input text sasasasa1")
+  performAction('send_key_enter')
+end
+
+
+Then /^I login to SAML OneLogin on user dalsi@se.cz$/ do
+  sleep(10)
+if $phone==["s3mini"]
+  performAction("touch_coordinate", 82, 335)
+elsif $phone==["nexus5"]
+  performAction("touch_coordinate", 240, 680)
+end
+  system("adb shell input text dalsi@se.cz")
+  sleep(1)
+  performAction('send_key_enter')
+  sleep(1)
+  system("adb shell input text sasasasa1")
+  performAction('send_key_enter')
+  wait_for_elements_exist(["* id:'message'"], :timeout => 30)
+end
+
+Then(/^I open new tab 151 times$/) do
+$x = 0
+$num = 151
+while $x < $num do
+	if $phone==["s3mini"]
+  		performAction("long_press_coordinate", 53, 310)
+	elsif $phone==["nexus5"]
+  		performAction("long_press_coordinate", 300, 900)
+	end
+  	performAction('wait_for_text', "Open in new tab", 12)
+  	performAction('click_on_text',"Open in new tab")
+  	wait_for_elements_exist(["* id:'action_show_toolbar'"], :timeout => 5)
+  	touch "* id:'action_show_toolbar'"
+  	wait_for_elements_exist(["* id:'tabs'"], :timeout => 120)
+  	touch "ImageButton id:'tabs'"
+  	wait_for_elements_exist(["* id:'title'"], :timeout => 70)
+  	touch "android.widget.TextView id:'title'"
+	$x +=1
+end
+end
+
+
+Then(/^I close new tab 151 times$/) do
+$x = 0
+$num = 151
+while $x < $num do
+  wait_for_elements_exist(["* id:'close_tab_button'"], :timeout => 30)
+  touch "* id:'close_tab_button'"
+  $x +=1
+end
+end
+
+
+Then(/^I wipe device in manager$/) do
+
+if $phone==["s3mini"]
+  performAction('wait_for_no_progress_bars')
+  sleep(15)
+  performAction("touch_coordinate", 91, 337)
+  performAction('wait_for_no_progress_bars')
+  sleep(10)
+  performAction("touch_coordinate", 268, 321)
+  performAction("touch_coordinate", 268, 321)
+  performAction("touch_coordinate", 268, 321)
+  sleep(5)
+  performAction('drag', 70, 70, 70, 40, 30)
+  performAction('drag', 70, 70, 70, 40, 30)
+  sleep(0.5)
+  performAction('drag', 70, 70, 70, 40, 30)
+  performAction('drag', 70, 70, 70, 40, 30)
+  performAction('drag', 70, 70, 70, 40, 30)
+  sleep(1)
+  performAction("touch_coordinate", 418, 491)
+  sleep(2)
+  performAction("touch_coordinate", 251, 530)
+elsif $phone==["nexus5"]
+  performAction("touch_coordinate", 150, 650)
+  sleep(10)
+  performAction("touch_coordinate", 474, 638)
+  sleep(5)
+  performAction("touch_coordinate", 794, 1700)
+  sleep(5)
+  performAction("touch_coordinate", 420, 1130)
+end
+
+
+end
 
 
 
