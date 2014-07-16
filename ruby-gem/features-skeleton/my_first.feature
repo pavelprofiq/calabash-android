@@ -1368,7 +1368,7 @@ Then I close new tab
 Then I check only one tab exist
 Then I delete organization from tab view
 
-@performance @nexus5 @s3mini @musimnareportitbug @failing
+@performance @nexus5 @s3mini @musimnareportitbug @failing @2794
 Scenario: Open 51 new tabs with one user and delete all of them C15384
 And I login to Sace with org "muhehe.profiq.cz" email "a@a.cz" password "sasasasa1" and PINs "2222"
 Then I open organization list menu  
